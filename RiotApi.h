@@ -3,8 +3,7 @@
 
 #include <string>
 #include <unordered_map>
-#include <nlohmann/json.hpp>  // JSON parsing library
-#include <filesystem>         // C++17 for file system operations
+#include <nlohmann/json.hpp>
 
 class RiotApi {
 private:

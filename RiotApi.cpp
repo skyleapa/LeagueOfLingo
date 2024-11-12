@@ -46,7 +46,7 @@ std::string RiotApi::makeApiRequest(const std::string& url) {
 
 nlohmann::json RiotApi::getMatchData(const std::string& matchId) {
     if (cache.find(matchId) != cache.end()) {
-        return cache[matchId];  // return cached data
+        return cache[matchId];  // return cached data so dont need to re request from API
     }
 
     std::string url = "https://americas.api.riotgames.com/lol/match/v5/matches/" + matchId;
