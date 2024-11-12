@@ -1,0 +1,5 @@
+/private/var/folders/14/lltdz85s0tz_sn26y_zbrsfw0000gn/T/AppTranslocation/1312ED31-5691-4498-A285-ADBBB831F9DE/d/CLion.app/Contents/bin/cmake/mac/aarch64/bin/cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_MAKE_PROGRAM=/private/var/folders/14/lltdz85s0tz_sn26y_zbrsfw0000gn/T/AppTranslocation/1312ED31-5691-4498-A285-ADBBB831F9DE/d/CLion.app/Contents/bin/ninja/mac/aarch64/ninja -G Ninja -S /Users/michellewang/Documents/Coding/LeagueOfLingo -B /Users/michellewang/Documents/Coding/LeagueOfLingo/cmake-build-debug
+-- Found CURL: /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.2.sdk/usr/lib/libcurl.tbd (found version "8.4.0")
+-- Configuring done (0.6s)
+-- Generating done (0.0s)
+-- Build files have been written to: /Users/michellewang/Documents/Coding/LeagueOfLingo/cmake-build-debug
