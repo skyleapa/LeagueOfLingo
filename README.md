@@ -10,13 +10,16 @@ for that term. For example, to identify an "inting" example, we look for players
 so the definitions stay fresh!
 
 ## How it was built
-This application was built entirely in C++. The frontend framework is using Qt Widgets in MainWindow.cpp, and the API calls are made using LibCurl in RiotApi.cpp.
+This application was built entirely in C++. The frontend framework is using Qt Widgets in MainWindow.cpp, and the API calls are made using Libcurl in RiotApi.cpp. The logic for
+handling the dictionary definitions and example lookups are in LeagueDictionary.cpp. There is also caching to the disk to save API calls, so that match data is saved into a "riot_cache"
+folder, which is used for direct querying.
 
 ## Installation
 1. Use CLion or your preferred IDE
-2. The libraries used are:
+3. Clone the repository
+3. The libraries used are:
    - nlohmann_json
    - libcurl
    - qt
    I installed them through homebrew
-3. Clone the repository and press start!
+4. Press the start button or run it through main.cpp!
