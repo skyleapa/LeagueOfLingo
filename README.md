@@ -21,5 +21,6 @@ folder, which is used for direct querying.
    - nlohmann_json
    - libcurl
    - qt
+   
    I installed them through homebrew
 4. Press the start button or run it through main.cpp!
