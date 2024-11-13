@@ -2,6 +2,8 @@
 
 As a way to familiarize myself with a role at Riot Games, I've built a league dictionary with C++ and Qt that gets real life examples from my own games!
 
+<img src="https://github.com/user-attachments/assets/105c27f3-407c-4977-bc96-88752f5f35a2" width="300">
+
 ## Inspiration
 I have friends that are first time players of league, and one of their struggles is understanding league lingo. To help them learn the different terms used
 in game, I've built League of Lingo, which allows you search for a specific keyword and receive a definition. Along with that, the dictionary makes a request to the Riot API,
