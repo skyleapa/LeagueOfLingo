@@ -48,6 +48,14 @@ rule RERUN_CMAKE
 
 
 #############################################
+# Rule for cleaning additional files.
+
+rule CLEAN_ADDITIONAL
+  command = /private/var/folders/14/lltdz85s0tz_sn26y_zbrsfw0000gn/T/AppTranslocation/1312ED31-5691-4498-A285-ADBBB831F9DE/d/CLion.app/Contents/bin/cmake/mac/aarch64/bin/cmake -DCONFIG=$CONFIG -P CMakeFiles/clean_additional.cmake
+  description = Cleaning additional files...
+
+
+#############################################
 # Rule for cleaning all built files.
 
 rule CLEAN

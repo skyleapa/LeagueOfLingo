@@ -7,13 +7,13 @@
 
 LeagueDictionary::LeagueDictionary() {
     // TODO: tracking map data from matches to determine jungle ganks
-    dictionary["Gank"] = "An ambush of an enemy champion/teammate, coming from the jungle to help lane.";
+    dictionary["Gank (In progress)"] = "An ambush of an enemy champion/teammate, coming from the jungle to help lane.";
     // TODO: play a game to get dragon data
-    dictionary["Dragon"] = "A powerful neutral monster offering team-wide buffs.";
+    dictionary["Dragon"] = "A powerful neutral monster offering team-wide buffs. There are a variety of different dragon types, such as Cloud, Flame and Chemtech.";
     dictionary["CS"] = "Creep Score, the number of minions or neutral monsters killed.";
     dictionary["CC"] = "Crowd control, describing an ability or spell that temporarily impedes an enemy's ability to fight.";
 
-    dictionary["Inting"] = "Intentionally feeding, or dying repeatedly, giving the enemy team an advantage. Often done maliciously or due to poor play.";
+    dictionary["Inting"] = "Intentionally feeding, or dying repeatedly in the game. Often done maliciously or due to poor play.";
     dictionary["Fed"] = "A player who has accumulated many kills and has become very strong, often 'carrying' their team.";
 
     queryHandlers["CS"] = [this](RiotApi& riotApi, const std::string& puuid, const std::string& gameName, const std::string& tagLine) {
@@ -28,6 +28,9 @@ LeagueDictionary::LeagueDictionary() {
     queryHandlers["Inting"] = [this](RiotApi& riotApi, const std::string& puuid, const std::string& gameName, const std::string& tagLine) {
         return this->intingQueryHandler(riotApi, puuid, gameName, tagLine);
     };
+    queryHandlers["Dragon"] = [this](RiotApi& riotApi, const std::string& puuid, const std::string& gameName, const std::string& tagLine) {
+        return this->dragonQueryHandler(riotApi, puuid, gameName, tagLine);
+    };
 }
 
 void LeagueDictionary::addEntry(const std::string& keyword, const std::string& definition) {
@@ -41,7 +44,16 @@ std::string LeagueDictionary::lookup(const std::string& keyword, RiotApi& riotAp
         return it->second(riotApi, puuid, gameName, tagLine);
     }
 
-    return "The league term is not in our dictionary :(";
+    return "The league term is not in our dictionary or under construction :(";
+}
+
+std::string LeagueDictionary::formatGameTimestamp(long long timestamp) const {
+    std::time_t gameStartTime = timestamp / 1000;
+    std::tm* timeInfo = std::gmtime(&gameStartTime);
+
+    std::ostringstream dateStream;
+    dateStream << std::put_time(timeInfo, "%Y-%m-%d %H:%M:%S UTC");
+    return dateStream.str();
 }
 
 std::string LeagueDictionary::csQueryHandler(RiotApi& riotApi, const std::string& puuid, const std::string& gameName, const std::string& tagLine) const {
@@ -57,20 +69,16 @@ std::string LeagueDictionary::csQueryHandler(RiotApi& riotApi, const std::string
                 std::string champion = participant["championName"].get<std::string>();
 
                 long long gameStartTimestamp = matchData["info"]["gameStartTimestamp"].get<long long>();
-                std::time_t gameStartTime = gameStartTimestamp / 1000; // converting ms to s
-                std::tm* timeInfo = std::gmtime(&gameStartTime); // converting to UTC
+                std::string formattedTimestamp = formatGameTimestamp(gameStartTimestamp);
 
-                std::ostringstream dateStream;
-                dateStream << std::put_time(timeInfo, "%Y-%m-%d %H:%M:%S UTC");
-
-                return dictionary.at("CS") + "\nExample: On " + dateStream.str() +
+                return dictionary.at("CS") + "\n\nExample: On " + formattedTimestamp +
                        ", the player " + gameName + " playing " + champion +
                        " achieved a CS score of " + std::to_string(csScore) +
                        ", meaning that they killed that many minions/neutral monsters!.";
             }
         }
     }
-    return "No examples found for cs";
+    return dictionary.at("CS") + "\nNo examples found for CS";
 }
 
 std::string LeagueDictionary::ccQueryHandler(RiotApi& riotApi, const std::string& puuid, const std::string& gameName, const std::string& tagLine) const {
@@ -86,20 +94,16 @@ std::string LeagueDictionary::ccQueryHandler(RiotApi& riotApi, const std::string
                 std::string champion = participant["championName"].get<std::string>();
 
                 long long gameStartTimestamp = matchData["info"]["gameStartTimestamp"].get<long long>();
-                std::time_t gameStartTime = gameStartTimestamp / 1000;
-                std::tm* timeInfo = std::gmtime(&gameStartTime);
+                std::string formattedTimestamp = formatGameTimestamp(gameStartTimestamp);
 
-                std::ostringstream dateStream;
-                dateStream << std::put_time(timeInfo, "%Y-%m-%d %H:%M:%S UTC");
-
-                return dictionary.at("CC") + "\nExample: On " + dateStream.str() +
+                return dictionary.at("CC") + "\n\nExample: On " + formattedTimestamp +
                        ", the player " + gameName + " playing " + champion +
                        " dealt " + std::to_string(ccScore) +
                        " seconds of crowd control during the game.";
             }
         }
     }
-    return "No examples found for cc";
+    return dictionary.at("CC") + "\nNo examples found for CC";
 }
 
 std::string LeagueDictionary::fedQueryHandler(RiotApi& riotApi, const std::string& puuid, const std::string& gameName, const std::string& tagLine) const {
@@ -140,13 +144,9 @@ std::string LeagueDictionary::fedQueryHandler(RiotApi& riotApi, const std::strin
         }
 
         if (!fedPlayerName.empty()) {
-            std::time_t gameStartTime = fedPlayerTimestamp / 1000; // Milliseconds to seconds
-            std::tm* timeInfo = std::gmtime(&gameStartTime);
+            std::string formattedTimestamp = formatGameTimestamp(fedPlayerTimestamp);
 
-            std::ostringstream dateStream;
-            dateStream << std::put_time(timeInfo, "%Y-%m-%d %H:%M:%S UTC");
-
-            return dictionary.at("CC") + "\nExample: On " + dateStream.str() + ", the player " +
+            return dictionary.at("Fed") + "\n\nExample: On " + formattedTimestamp + ", the player " +
                    fedPlayerName + " playing " + fedChampion +
                    " achieved " + std::to_string(fedKills) + " kills, " +
                    std::to_string(fedDeaths) + " deaths, " +
@@ -156,7 +156,7 @@ std::string LeagueDictionary::fedQueryHandler(RiotApi& riotApi, const std::strin
         }
     }
 
-    return "No examples found for fed";
+    return dictionary.at("Fed") + "\nNo examples found for fed";
 }
 
 std::string LeagueDictionary::intingQueryHandler(RiotApi& riotApi, const std::string& puuid, const std::string& gameName, const std::string& tagLine) const {
@@ -197,13 +197,9 @@ std::string LeagueDictionary::intingQueryHandler(RiotApi& riotApi, const std::st
         }
 
         if (!intingPlayerName.empty()) {
-            std::time_t gameStartTime = intingPlayerTimestamp / 1000;
-            std::tm* timeInfo = std::gmtime(&gameStartTime);
+            std::string formattedTimestamp = formatGameTimestamp(intingPlayerTimestamp);
 
-            std::ostringstream dateStream;
-            dateStream << std::put_time(timeInfo, "%Y-%m-%d %H:%M:%S UTC");
-
-            return dictionary.at("CC") + "\nExample: On " + dateStream.str() + ", the player " +
+            return dictionary.at("Inting") + "\n\nExample: On " + formattedTimestamp + ", the player " +
                    intingPlayerName + " playing " + intingChampion +
                    " had " + std::to_string(intingKills) + " kills, " +
                    std::to_string(intingDeaths) + " deaths, and " +
@@ -213,11 +209,54 @@ std::string LeagueDictionary::intingQueryHandler(RiotApi& riotApi, const std::st
         }
     }
 
-    return "No examples found for inting.";
+    return dictionary.at("Inting") + "\nNo examples found for inting.";
 }
 
+std::string LeagueDictionary::dragonQueryHandler(RiotApi& riotApi, const std::string& puuid, const std::string& gameName, const std::string& tagLine) const {
+    auto matchList = riotApi.getPlayerMatches(puuid, gameName, tagLine, "americas");
+
+    for (const auto& matchId : matchList) {
+        auto matchData = riotApi.getMatchData(matchId);
+
+        // dragon kills are found in "events" data
+        for (const auto& event : matchData["info"]["events"]) {
+            if (event["type"] == "BUILDING_KILL" && event["killerId"].is_number()) {
+                int killerId = event["killerId"].get<int>();
+                std::string eventName = event["eventType"].get<std::string>();
+
+                if (eventName == "Dragon") {
+                    for (const auto& participant : matchData["info"]["participants"]) {
+                        if (participant["participantId"] == killerId) {
+                            std::string champion = participant["championName"].get<std::string>();
+                            std::string playerName = participant["summonerName"].get<std::string>();
+
+                            long long gameStartTimestamp = matchData["info"]["gameStartTimestamp"].get<long long>();
+                            std::string formattedTimestamp = formatGameTimestamp(gameStartTimestamp);
+
+                            return dictionary.at("Dragon") + "\n\nExample: On " + formattedTimestamp +
+                                   ", the player " + playerName + " playing " + champion +
+                                   " was part of the team that killed the Dragon.";
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    return dictionary.at("Dragon") + "\nNo examples found for dragons";
+}
+
+// this was used for the terminal version
 void LeagueDictionary::showAllEntries() const {
     for (const auto& entry : dictionary) {
         std::cout << entry.first << ": " << entry.second << std::endl;
     }
+}
+
+std::vector<std::string> LeagueDictionary::getAllTerms() const {
+    std::vector<std::string> terms;
+    for (const auto& entry : dictionary) {
+        terms.push_back(entry.first);
+    }
+    return terms;
 }

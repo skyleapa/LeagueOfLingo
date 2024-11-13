@@ -1,3 +1,5 @@
 /Users/michellewang/Documents/Coding/LeagueOfLingo/cmake-build-debug/CMakeFiles/LeagueOfLingo.dir
 /Users/michellewang/Documents/Coding/LeagueOfLingo/cmake-build-debug/CMakeFiles/edit_cache.dir
 /Users/michellewang/Documents/Coding/LeagueOfLingo/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/Users/michellewang/Documents/Coding/LeagueOfLingo/cmake-build-debug/CMakeFiles/LeagueOfLingo_autogen_timestamp_deps.dir
+/Users/michellewang/Documents/Coding/LeagueOfLingo/cmake-build-debug/CMakeFiles/LeagueOfLingo_autogen.dir
